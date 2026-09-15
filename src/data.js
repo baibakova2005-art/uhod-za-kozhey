@@ -7,7 +7,7 @@ export const SITE = {
 };
 
 // price: число в рублях или null, пока цена не известна.
-// art: какой флакон рисовать (см. Bottles.jsx), tint: фон карточки.
+// tint: фон плашки «Шаг N» над фото. photo: см. блок photos ниже по файлу — своя структура на каждый товар.
 export const products = [
   {
     id: "toner",
@@ -23,7 +23,14 @@ export const products = [
     price: 2337,
     priceOld: 3541,
     tint: "#fbe3e6",
-    art: "toner",
+    photo: {
+      file: "step-toner",
+      width: 1200,
+      height: 1000,
+      alt: "Флакон-капельница на розовой ткани",
+      author: "Polina Kovaleva",
+      url: "https://www.pexels.com/photo/cosmetic-containers-on-white-textile-8101673/",
+    },
   },
   {
     id: "pads",
@@ -39,7 +46,14 @@ export const products = [
     price: 2106,
     priceOld: 2340,
     tint: "#efe7f8",
-    art: "pads",
+    photo: {
+      file: "step-pads",
+      width: 1100,
+      height: 1000,
+      alt: "Баночка с бамбуковой крышкой на белой ткани",
+      author: "Polina Kovaleva",
+      url: "https://www.pexels.com/photo/cosmetic-containers-on-white-textile-8101673/",
+    },
   },
   {
     id: "serum",
@@ -55,7 +69,14 @@ export const products = [
     price: 2632,
     priceOld: 3656,
     tint: "#fdeade",
-    art: "serum",
+    photo: {
+      file: "step-serum",
+      width: 1600,
+      height: 1067,
+      alt: "Флакон с масляной сывороткой и пипеткой на розовом фоне",
+      author: "Maria Lupan",
+      url: "https://unsplash.com/photos/BlcA2-o-7IM",
+    },
   },
   {
     id: "cream",
@@ -71,7 +92,14 @@ export const products = [
     price: 2957,
     priceOld: 3215,
     tint: "#e5f1ec",
-    art: "cream",
+    photo: {
+      file: "step-cream",
+      width: 1600,
+      height: 1999,
+      alt: "Тюбик крема на растёртом следе крема",
+      author: "Birgith Roosipuu",
+      url: "https://unsplash.com/photos/4uN0JxJGRQE",
+    },
   },
   {
     id: "mist",
@@ -87,7 +115,14 @@ export const products = [
     price: 1663,
     priceOld: null,
     tint: "#e3eef6",
-    art: "mist",
+    photo: {
+      file: "step-mist",
+      width: 1600,
+      height: 2399,
+      alt: "Флакон-спрей на светлом фоне",
+      author: "Priscila Caetano",
+      url: "https://www.pexels.com/photo/beauty-product-in-a-dispenser-bottle-15766704/",
+    },
   },
 ];
 
@@ -152,7 +187,8 @@ export const faq = [
   },
 ];
 
-// Фото с Unsplash (бесплатная лицензия Unsplash License, без логотипов чужих брендов).
+// Фото с Unsplash и Pexels (бесплатные лицензии, без логотипов чужих брендов) —
+// для блоков «Состав» и «Набор». Фото товаров лежат прямо в products.photo выше.
 // file — имя без размера и расширения: в public/photos лежат file-480/960/1600.webp.
 export const photos = {
   ingredients: {

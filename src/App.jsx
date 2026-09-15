@@ -95,21 +95,22 @@ function HeroArt() {
 // Сетка шагов: на телефоне одна колонка, на планшете две (пятая карточка во всю ширину),
 // на компьютере шесть долей — две широкие карточки сверху и три снизу, без «сироты» в ряду.
 function ProductCard({ p }) {
-  const Art = BOTTLES[p.art];
   return (
     <article
       className={`flex flex-col rounded-[20px] bg-bg p-3 sm:last:col-span-2 ${p.step <= 2 ? "lg:col-span-3" : "lg:col-span-2"}`}
     >
       <div
-        className="relative flex h-[210px] items-end justify-center rounded-[14px] pb-[18px]"
+        className="relative h-[210px] overflow-hidden rounded-[14px]"
         style={{ background: p.tint }}
       >
-        <span className="absolute left-3 top-3 rounded-full bg-surface px-3 py-1 text-xs font-bold">
+        <span className="absolute left-3 top-3 z-10 rounded-full bg-surface px-3 py-1 text-xs font-bold">
           Шаг {p.step}
           {p.when && ` · ${p.when}`}
         </span>
-        <Art
-          className={p.art === "pads" ? "h-[130px] w-auto" : "h-[170px] w-auto"}
+        <Photo
+          photo={p.photo}
+          className="h-full w-full"
+          sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 90vw"
         />
       </div>
       <div className="flex flex-1 flex-col gap-2.5 px-2 pb-2 pt-4">
@@ -154,12 +155,22 @@ function ProductCard({ p }) {
   );
 }
 
+const sourceName = (url) =>
+  url.includes("pexels.com") ? "Pexels" : "Unsplash";
+
 export default function App() {
   const total = products.every((p) => p.price)
     ? products.reduce((s, p) => s + p.price, 0)
     : null;
 
-  const credits = [photos.set, photos.ingredients].filter(Boolean);
+  // Одно и то же фото Polina Kovaleva использовано дважды (тонер и пэды —
+  // разные кадры одного снимка), в подписи оно должно встретиться один раз.
+  const allPhotos = [
+    photos.set,
+    photos.ingredients,
+    ...products.map((p) => p.photo),
+  ].filter(Boolean);
+  const credits = [...new Map(allPhotos.map((c) => [c.url, c])).values()];
 
   return (
     <div id="top" className="min-h-dvh">
@@ -400,7 +411,7 @@ export default function App() {
             <p>
               Фото:{" "}
               {credits.map((c, i) => (
-                <span key={c.file}>
+                <span key={c.url}>
                   {i > 0 && ", "}
                   <a
                     href={c.url}
@@ -409,10 +420,10 @@ export default function App() {
                     className="underline underline-offset-2 hover:text-ink"
                   >
                     {c.author}
-                  </a>
+                  </a>{" "}
+                  ({sourceName(c.url)})
                 </span>
-              ))}{" "}
-              / Unsplash
+              ))}
             </p>
           )
         }
