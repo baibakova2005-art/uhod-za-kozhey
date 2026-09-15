@@ -1,0 +1,1386 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Вариант C «Лаборатория» — уход за кожей лица</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Onest:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --font: "Onest", system-ui, sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, monospace;
+
+        --bg: #f4f6fa;
+        --surface: #ffffff;
+        --ink: #141a2e;
+        --ink-2: #4a5270;
+        --line: #e1e5ef;
+        --accent: #4353d6;
+        --accent-hover: #3544bd;
+        --accent-soft: #e7eafc;
+        --mint: #dcf2ea;
+        --blush: #fbe6ea;
+
+        --r-lg: 24px;
+        --r-md: 16px;
+        --r-sm: 10px;
+        --shadow-soft:
+          0 1px 2px rgba(30, 40, 90, 0.05),
+          0 12px 32px -16px rgba(30, 40, 90, 0.18);
+        --shadow-lift:
+          0 2px 4px rgba(40, 55, 160, 0.12),
+          0 16px 36px -14px rgba(40, 55, 160, 0.4);
+        --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+        --section: clamp(72px, 10vw, 128px);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 400 16px/1.6 var(--font);
+        -webkit-font-smoothing: antialiased;
+      }
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+      a {
+        color: inherit;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-weight: 600;
+        overflow-wrap: break-word;
+      }
+      h1 {
+        font-size: clamp(2.1rem, 1.2rem + 3.6vw, 4.1rem);
+        line-height: 1.06;
+        letter-spacing: -0.035em;
+      }
+      h2 {
+        font-size: clamp(1.7rem, 1.1rem + 2.1vw, 2.6rem);
+        line-height: 1.12;
+        letter-spacing: -0.03em;
+      }
+      h3 {
+        font-size: 1.15rem;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+      }
+      p {
+        margin: 0;
+      }
+      .container {
+        width: min(1200px, 100% - 40px);
+        margin-inline: auto;
+      }
+      .section {
+        padding-block: var(--section);
+      }
+      .mono {
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-2);
+      }
+      .mono.accent {
+        color: var(--accent);
+      }
+      .section-head {
+        display: grid;
+        gap: 14px;
+        max-width: 640px;
+        margin-bottom: 44px;
+      }
+      .section-head p {
+        color: var(--ink-2);
+        font-size: 1.06rem;
+        max-width: 56ch;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 52px;
+        padding: 0 26px;
+        border-radius: var(--r-sm);
+        border: 0;
+        font: 600 1rem/1 var(--font);
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+          transform 0.18s var(--ease),
+          box-shadow 0.18s var(--ease),
+          background-color 0.18s var(--ease);
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lift);
+      }
+      .btn:active {
+        transform: translateY(0);
+      }
+      .btn:focus-visible,
+      a:focus-visible,
+      summary:focus-visible,
+      input:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+      .btn-line {
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: inset 0 0 0 1.5px var(--line);
+      }
+      .btn-sm {
+        min-height: 44px;
+        padding: 0 18px;
+        font-size: 0.92rem;
+      }
+
+      /* header */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(244, 246, 250, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--line);
+      }
+      .header .container {
+        height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        text-decoration: none;
+        letter-spacing: -0.02em;
+      }
+      .logo i {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: conic-gradient(
+          from 200deg,
+          var(--accent),
+          #9aa6f5,
+          var(--blush),
+          var(--accent)
+        );
+      }
+      .nav {
+        display: flex;
+        gap: 6px;
+      }
+      .nav a {
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 500;
+        color: var(--ink-2);
+        padding: 8px 12px;
+        border-radius: 8px;
+      }
+      .nav a:hover {
+        background: var(--surface);
+        color: var(--ink);
+      }
+      @media (max-width: 860px) {
+        .nav {
+          display: none;
+        }
+      }
+
+      /* hero */
+      .hero {
+        padding-block: clamp(40px, 6vw, 80px) clamp(56px, 7vw, 96px);
+      }
+      .hero .container {
+        display: grid;
+        gap: 40px;
+        align-items: center;
+      }
+      @media (min-width: 980px) {
+        .hero .container {
+          grid-template-columns: 1fr 1.05fr;
+        }
+      }
+      .hero-copy {
+        display: grid;
+        gap: 22px;
+      }
+      .badge {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        justify-self: start;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 6px 14px 6px 8px;
+      }
+      .badge b {
+        background: var(--accent-soft);
+        color: var(--accent);
+        border-radius: 999px;
+        padding: 2px 8px;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 500;
+      }
+      .badge span {
+        font-size: 0.88rem;
+        font-weight: 500;
+      }
+      .lead {
+        font-size: 1.12rem;
+        color: var(--ink-2);
+        max-width: 48ch;
+      }
+      .hero-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .note {
+        font-size: 0.88rem;
+        color: var(--ink-2);
+      }
+      .panel {
+        background: var(--surface);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-soft);
+        padding: 20px;
+        display: grid;
+        gap: 16px;
+      }
+      .panel-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .panel-top .dots {
+        display: flex;
+        gap: 6px;
+      }
+      .panel-top .dots i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--line);
+      }
+      .lineup {
+        position: relative;
+        height: 280px;
+        border-radius: var(--r-md);
+        background:
+          linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 100% 28px,
+          linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 28px
+            100%,
+          #fafbfe;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 3%;
+        padding-bottom: 24px;
+        overflow: hidden;
+      }
+      .lineup::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 24px;
+        background: #eef1f8;
+      }
+      .lineup svg {
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 12px 12px rgba(30, 40, 90, 0.14));
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .metric {
+        background: var(--bg);
+        border-radius: var(--r-sm);
+        padding: 14px;
+        display: grid;
+        gap: 4px;
+      }
+      .metric b {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .metric span {
+        font-size: 0.8rem;
+        color: var(--ink-2);
+        line-height: 1.35;
+      }
+      @media (max-width: 520px) {
+        .metrics {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* strip */
+      .strip {
+        background: var(--surface);
+        border-block: 1px solid var(--line);
+      }
+      .strip .container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 32px;
+        justify-content: space-between;
+        align-items: center;
+        padding-block: 18px;
+      }
+      .strip .brands {
+        display: flex;
+        gap: 32px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+
+      /* problems */
+      .cards-3 {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+      .card {
+        background: var(--surface);
+        border-radius: var(--r-md);
+        padding: 24px;
+        display: grid;
+        gap: 10px;
+        border: 1px solid var(--line);
+        align-content: start;
+      }
+      .card p {
+        color: var(--ink-2);
+      }
+
+      /* bento steps */
+      .bento {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+      @media (min-width: 1000px) {
+        .bento {
+          grid-template-columns: repeat(6, 1fr);
+        }
+        .bento .p1,
+        .bento .p2 {
+          grid-column: span 3;
+        }
+        .bento .p3,
+        .bento .p4,
+        .bento .p5 {
+          grid-column: span 2;
+        }
+      }
+      .prod {
+        background: var(--surface);
+        border-radius: var(--r-lg);
+        border: 1px solid var(--line);
+        padding: 16px;
+        display: grid;
+        gap: 16px;
+        align-content: start;
+      }
+      .p1,
+      .p2 {
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 600px) {
+        .p1,
+        .p2 {
+          grid-template-columns: 180px 1fr;
+        }
+      }
+      .prod-art {
+        border-radius: var(--r-md);
+        min-height: 190px;
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+      .prod-art svg {
+        height: 160px;
+        width: auto;
+      }
+      .prod-art .mono {
+        position: absolute;
+        top: 10px;
+        left: 12px;
+      }
+      .prod-body {
+        display: grid;
+        gap: 10px;
+        align-content: start;
+        padding: 4px;
+      }
+      .prod-body p {
+        color: var(--ink-2);
+        font-size: 0.95rem;
+      }
+      .formula {
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        line-height: 1.7;
+        color: var(--ink);
+        background: var(--bg);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+      .prod-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+      .price {
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      /* matrix */
+      .table-wrap {
+        overflow-x: auto;
+        background: var(--surface);
+        border-radius: var(--r-lg);
+        border: 1px solid var(--line);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 720px;
+      }
+      th,
+      td {
+        padding: 16px 18px;
+        text-align: center;
+        border-bottom: 1px solid var(--line);
+        font-size: 0.92rem;
+      }
+      th {
+        font-weight: 600;
+      }
+      thead th {
+        font-family: var(--mono);
+        font-weight: 500;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--ink-2);
+        vertical-align: bottom;
+      }
+      tbody tr:last-child td,
+      tbody tr:last-child th {
+        border-bottom: 0;
+      }
+      tbody th {
+        text-align: left;
+      }
+      tbody th small {
+        display: block;
+        font-weight: 400;
+        color: var(--ink-2);
+        font-size: 0.82rem;
+        margin-top: 2px;
+      }
+      .yes {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+      .no {
+        display: inline-block;
+        width: 12px;
+        height: 2px;
+        background: var(--line);
+        vertical-align: middle;
+      }
+
+      /* set */
+      .set {
+        display: grid;
+        gap: 16px;
+      }
+      @media (min-width: 900px) {
+        .set {
+          grid-template-columns: 1.2fr 0.8fr;
+        }
+      }
+      .set-list {
+        background: var(--surface);
+        border-radius: var(--r-lg);
+        border: 1px solid var(--line);
+        padding: clamp(24px, 4vw, 40px);
+      }
+      .set-list ul {
+        list-style: none;
+        margin: 24px 0 0;
+        padding: 0;
+        display: grid;
+      }
+      .set-list li {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        padding-block: 14px;
+        border-top: 1px solid var(--line);
+      }
+      .set-list li .mono {
+        width: 32px;
+      }
+      .set-list li svg {
+        width: 20px;
+        height: 20px;
+        flex: none;
+        color: var(--accent);
+      }
+      .set-card {
+        background: var(--accent);
+        color: #fff;
+        border-radius: var(--r-lg);
+        padding: clamp(24px, 4vw, 40px);
+        display: grid;
+        gap: 16px;
+        align-content: space-between;
+      }
+      .set-card .mono {
+        color: #c9cffb;
+      }
+      .set-price {
+        font-size: clamp(2.6rem, 2rem + 2vw, 3.6rem);
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+      .set-card p {
+        color: #dfe3fd;
+      }
+      .btn-white {
+        background: #fff;
+        color: var(--accent);
+      }
+
+      /* faq */
+      .faq {
+        display: grid;
+        gap: 10px;
+        max-width: 860px;
+      }
+      .faq details {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-md);
+        padding: 0 22px;
+      }
+      .faq summary {
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 0;
+        font-weight: 600;
+        font-size: 1.04rem;
+      }
+      .faq summary::-webkit-details-marker {
+        display: none;
+      }
+      .faq summary::after {
+        content: "+";
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 600;
+        transition: transform 0.2s var(--ease);
+      }
+      .faq details[open] summary::after {
+        transform: rotate(45deg);
+      }
+      .faq details p {
+        padding-bottom: 20px;
+        color: var(--ink-2);
+        max-width: 62ch;
+      }
+
+      /* order */
+      .order {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        padding: clamp(24px, 5vw, 64px);
+        display: grid;
+        gap: 40px;
+        box-shadow: var(--shadow-soft);
+      }
+      @media (min-width: 900px) {
+        .order {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .order-copy {
+        display: grid;
+        gap: 16px;
+        align-content: start;
+      }
+      .order-copy p {
+        color: var(--ink-2);
+      }
+      .messengers {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .form {
+        display: grid;
+        gap: 14px;
+        background: var(--bg);
+        border-radius: var(--r-md);
+        padding: 24px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+        font-size: 0.88rem;
+        font-weight: 600;
+      }
+      .field input {
+        min-height: 50px;
+        border: 1.5px solid var(--line);
+        border-radius: var(--r-sm);
+        background: #fff;
+        padding: 0 14px;
+        font: 400 1rem var(--font);
+        color: var(--ink);
+      }
+      .field input::placeholder {
+        color: #7d85a0;
+      }
+      .field input:focus {
+        border-color: var(--accent);
+      }
+      .check {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        font-size: 0.86rem;
+        color: var(--ink-2);
+      }
+      .check input {
+        margin-top: 3px;
+        width: 18px;
+        height: 18px;
+        accent-color: var(--accent);
+        flex: none;
+      }
+      .form-msg {
+        font-size: 0.9rem;
+        color: var(--accent);
+        min-height: 1.4em;
+      }
+
+      .footer {
+        padding-block: 40px;
+        font-size: 0.86rem;
+        color: var(--ink-2);
+      }
+      .footer .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol id="toner" viewBox="0 0 120 220">
+          <rect
+            x="38"
+            y="4"
+            width="44"
+            height="36"
+            rx="8"
+            fill="#fff"
+            stroke="#e8c7cf"
+            stroke-width="2"
+          />
+          <rect x="20" y="38" width="80" height="176" rx="20" fill="#f8c9d2" />
+          <rect x="20" y="38" width="80" height="46" rx="20" fill="#fbdde3" />
+          <rect
+            x="31"
+            y="56"
+            width="8"
+            height="130"
+            rx="4"
+            fill="#fff"
+            opacity=".55"
+          />
+          <rect
+            x="34"
+            y="112"
+            width="52"
+            height="64"
+            rx="6"
+            fill="#fff"
+            opacity=".9"
+          />
+          <rect x="42" y="126" width="36" height="5" rx="2.5" fill="#d07a8f" />
+          <rect x="46" y="138" width="28" height="3" rx="1.5" fill="#e2aab8" />
+          <rect x="46" y="147" width="28" height="3" rx="1.5" fill="#e2aab8" />
+        </symbol>
+        <symbol id="serum" viewBox="0 0 120 220">
+          <ellipse cx="60" cy="22" rx="15" ry="18" fill="#2f2328" />
+          <rect
+            x="40"
+            y="36"
+            width="40"
+            height="30"
+            rx="6"
+            fill="#f1e4dc"
+            stroke="#e1cfc4"
+            stroke-width="2"
+          />
+          <rect x="26" y="64" width="68" height="150" rx="16" fill="#f6d6c4" />
+          <circle cx="48" cy="96" r="5" fill="#fff" opacity=".8" />
+          <circle cx="70" cy="110" r="4" fill="#fff" opacity=".8" />
+          <circle cx="56" cy="190" r="4" fill="#fff" opacity=".8" />
+          <circle cx="78" cy="176" r="5" fill="#fff" opacity=".8" />
+          <rect
+            x="36"
+            y="124"
+            width="48"
+            height="46"
+            rx="6"
+            fill="#fff"
+            opacity=".92"
+          />
+          <rect x="44" y="138" width="32" height="5" rx="2.5" fill="#c9876a" />
+          <rect x="48" y="150" width="24" height="3" rx="1.5" fill="#e0b39d" />
+        </symbol>
+        <symbol id="pads" viewBox="0 0 150 150">
+          <rect x="8" y="30" width="134" height="34" rx="10" fill="#c7b3e3" />
+          <rect x="14" y="60" width="122" height="84" rx="14" fill="#e9e0f5" />
+          <rect
+            x="40"
+            y="82"
+            width="70"
+            height="40"
+            rx="6"
+            fill="#fff"
+            opacity=".92"
+          />
+          <rect x="50" y="94" width="50" height="5" rx="2.5" fill="#9c83c4" />
+          <rect x="56" y="106" width="38" height="3" rx="1.5" fill="#c3b1e0" />
+        </symbol>
+        <symbol id="cream" viewBox="0 0 120 220">
+          <rect x="28" y="6" width="64" height="12" rx="3" fill="#dfe9e5" />
+          <path
+            d="M30 18 H90 L100 176 H20 Z"
+            fill="#f7faf9"
+            stroke="#d6e2de"
+            stroke-width="2"
+          />
+          <rect x="40" y="176" width="40" height="38" rx="6" fill="#7db5a6" />
+          <rect x="38" y="70" width="44" height="58" rx="6" fill="#e6f1ed" />
+          <rect x="46" y="84" width="28" height="6" rx="3" fill="#5c9888" />
+          <rect x="48" y="98" width="24" height="3" rx="1.5" fill="#9dc8bc" />
+          <rect x="48" y="107" width="24" height="3" rx="1.5" fill="#9dc8bc" />
+        </symbol>
+        <symbol id="mist" viewBox="0 0 120 220">
+          <rect
+            x="50"
+            y="4"
+            width="22"
+            height="18"
+            rx="4"
+            fill="#fff"
+            stroke="#d7e3ec"
+            stroke-width="2"
+          />
+          <rect x="40" y="20" width="40" height="24" rx="5" fill="#e9eff4" />
+          <rect x="28" y="42" width="64" height="172" rx="24" fill="#fbfbf7" />
+          <path
+            d="M28 66 a24 24 0 0 1 24 -24 H68 a24 24 0 0 1 24 24 V126 H28 Z"
+            fill="#dcebf6"
+          />
+          <rect
+            x="37"
+            y="58"
+            width="7"
+            height="130"
+            rx="3.5"
+            fill="#fff"
+            opacity=".7"
+          />
+          <rect
+            x="40"
+            y="140"
+            width="40"
+            height="44"
+            rx="6"
+            fill="#fff"
+            stroke="#e6ecef"
+            stroke-width="1.5"
+          />
+          <rect x="47" y="152" width="26" height="5" rx="2.5" fill="#6d9bbf" />
+          <rect x="50" y="164" width="20" height="3" rx="1.5" fill="#a9c5da" />
+        </symbol>
+        <symbol id="check" viewBox="0 0 20 20">
+          <circle cx="10" cy="10" r="9" fill="currentColor" opacity=".12" />
+          <path
+            d="M6 10.5l2.6 2.5L14 7.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </symbol>
+      </defs>
+    </svg>
+
+    <header class="header">
+      <div class="container">
+        <a class="logo" href="#"><i></i>Glow Ritual</a>
+        <nav class="nav" aria-label="Разделы">
+          <a href="#steps">5 шагов</a>
+          <a href="#ingredients">Состав</a>
+          <a href="#set">Набор</a>
+          <a href="#faq">Вопросы</a>
+        </nav>
+        <a class="btn btn-primary btn-sm" href="#order">Подобрать уход</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <div class="hero-copy">
+            <span class="badge"
+              ><b>5 шагов</b
+              ><span>Корейский уход: утро и&nbsp;вечер</span></span
+            >
+            <h1>Увлажнённая и&nbsp;спокойная кожа без стянутости</h1>
+            <p class="lead">
+              Тонер, пэды, сыворотка, крем и&nbsp;мист от&nbsp;Anua, Dr.Althea
+              и&nbsp;Biodance. Средства дополняют друг друга и&nbsp;подходят для
+              сухой и&nbsp;чувствительной кожи.
+            </p>
+            <div class="hero-cta">
+              <a class="btn btn-primary" href="#order"
+                >Подобрать уход под мою кожу</a
+              >
+              <a class="btn btn-line" href="#steps">Смотреть 5 шагов</a>
+            </div>
+            <p class="note">Ответим в&nbsp;Telegram, без звонков</p>
+          </div>
+          <div class="panel" aria-hidden="true">
+            <div class="panel-top">
+              <span class="mono">Ритуал · 05 средств</span
+              ><span class="dots"><i></i><i></i><i></i></span>
+            </div>
+            <div class="lineup">
+              <svg style="height: 170px; width: auto" viewBox="0 0 120 220">
+                <use href="#toner" />
+              </svg>
+              <svg style="height: 110px; width: auto" viewBox="0 0 150 150">
+                <use href="#pads" />
+              </svg>
+              <svg style="height: 150px; width: auto" viewBox="0 0 120 220">
+                <use href="#serum" />
+              </svg>
+              <svg style="height: 140px; width: auto" viewBox="0 0 120 220">
+                <use href="#cream" />
+              </svg>
+              <svg style="height: 160px; width: auto" viewBox="0 0 120 220">
+                <use href="#mist" />
+              </svg>
+            </div>
+            <div class="metrics">
+              <div class="metric">
+                <b>77%</b><span>экстракта персика в&nbsp;тонере Anua</span>
+              </div>
+              <div class="metric">
+                <b>2%</b><span>ниацинамида для ровного тона</span>
+              </div>
+              <div class="metric">
+                <b>0,00</b><span>индекс раздражения пэдов Biodance*</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="strip">
+        <div class="container">
+          <div class="brands">
+            <span>ANUA</span><span>DR.ALTHEA</span><span>BIODANCE</span>
+          </div>
+          <span class="mono"
+            >5 средств · 7 активных компонентов · 1 ритуал</span
+          >
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <span class="mono accent">Узнаёте себя?</span>
+            <h2>Когда кожа просит помощи</h2>
+          </div>
+          <div class="cards-3">
+            <article class="card">
+              <span class="mono">Сигнал 01</span>
+              <h3>Стянутость после умывания</h3>
+              <p>
+                Хочется сразу нанести крем, а&nbsp;к&nbsp;обеду кожа снова
+                сухая.
+              </p>
+            </article>
+            <article class="card">
+              <span class="mono">Сигнал 02</span>
+              <h3>Тусклый тон и&nbsp;шелушения</h3>
+              <p>
+                Тональное ложится пятнами, вокруг рта и&nbsp;на&nbsp;крыльях
+                носа — сухие участки.
+              </p>
+            </article>
+            <article class="card">
+              <span class="mono">Сигнал 03</span>
+              <h3>Покраснения и&nbsp;следы</h3>
+              <p>
+                Кожа реагирует на&nbsp;новые средства, после высыпаний остаются
+                красные пятна.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="steps" style="padding-top: 0">
+        <div class="container">
+          <div class="section-head">
+            <span class="mono accent">Протокол ухода</span>
+            <h2>5 шагов, которые работают вместе</h2>
+            <p>
+              Каждое средство отвечает за&nbsp;свою задачу: подготовить,
+              очистить поры, напитать влагой, успокоить и&nbsp;поддержать кожу
+              днём.
+            </p>
+          </div>
+          <div class="bento">
+            <article class="prod p1">
+              <div class="prod-art" style="background: var(--blush)">
+                <span class="mono">Шаг 01</span
+                ><svg viewBox="0 0 120 220"><use href="#toner" /></svg>
+              </div>
+              <div class="prod-body">
+                <span class="mono">Anua · тонер-эссенция</span>
+                <h3>Peach 77 Niacin Essence Toner</h3>
+                <p>
+                  Мягко отшелушивает, выравнивает тон и&nbsp;готовит кожу
+                  к&nbsp;следующим шагам.
+                </p>
+                <div class="formula">
+                  77% персик · 2% ниацинамид · пантенол · церамиды
+                </div>
+                <div class="prod-foot">
+                  <span class="price">— ₽</span
+                  ><a class="btn btn-line btn-sm" href="#order">В заказ</a>
+                </div>
+              </div>
+            </article>
+            <article class="prod p2">
+              <div class="prod-art" style="background: #efe9f8">
+                <span class="mono">Шаг 02</span
+                ><svg viewBox="0 0 150 150" style="height: 120px">
+                  <use href="#pads" />
+                </svg>
+              </div>
+              <div class="prod-body">
+                <span class="mono">Biodance · пэды</span>
+                <h3>Collagen Gel Toner Pads</h3>
+                <p>
+                  Гелевые пэды: визуально сужают поры и&nbsp;поддерживают
+                  упругость. 60&nbsp;шт. и&nbsp;пинцет.
+                </p>
+                <div class="formula">
+                  коллаген · олиго-гиалуроновая к-та · пептиды
+                </div>
+                <div class="prod-foot">
+                  <span class="price">— ₽</span
+                  ><a class="btn btn-line btn-sm" href="#order">В заказ</a>
+                </div>
+              </div>
+            </article>
+            <article class="prod p3">
+              <div class="prod-art" style="background: #fdeee4">
+                <span class="mono">Шаг 03</span
+                ><svg viewBox="0 0 120 220"><use href="#serum" /></svg>
+              </div>
+              <div class="prod-body">
+                <span class="mono">Anua · сыворотка</span>
+                <h3>PDRN Hyaluronic Acid Capsule 100 Serum</h3>
+                <p>Глубоко увлажняет, кожа выглядит гладкой и&nbsp;сияющей.</p>
+                <div class="formula">гиалуроновая к-та · PDRN</div>
+                <div class="prod-foot">
+                  <span class="price">— ₽</span
+                  ><a class="btn btn-line btn-sm" href="#order">В заказ</a>
+                </div>
+              </div>
+            </article>
+            <article class="prod p4">
+              <div class="prod-art" style="background: var(--mint)">
+                <span class="mono">Шаг 04</span
+                ><svg viewBox="0 0 120 220"><use href="#cream" /></svg>
+              </div>
+              <div class="prod-body">
+                <span class="mono">Dr.Althea · крем</span>
+                <h3>345 Relief Cream</h3>
+                <p>
+                  Успокаивает, укрепляет барьер, помогает коже после высыпаний.
+                </p>
+                <div class="formula">
+                  ниацинамид · пантенол · центелла · церамиды
+                </div>
+                <div class="prod-foot">
+                  <span class="price">— ₽</span
+                  ><a class="btn btn-line btn-sm" href="#order">В заказ</a>
+                </div>
+              </div>
+            </article>
+            <article class="prod p5">
+              <div class="prod-art" style="background: #e4eef8">
+                <span class="mono">Шаг 05 · днём</span
+                ><svg viewBox="0 0 120 220"><use href="#mist" /></svg>
+              </div>
+              <div class="prod-body">
+                <span class="mono">Dr.Althea · крем-мист</span>
+                <h3>345 Relief Cream Mist</h3>
+                <p>
+                  Два слоя — крем и&nbsp;эссенция. Снимает сухость
+                  в&nbsp;течение дня.
+                </p>
+                <div class="formula">пантенол · мадекассосид</div>
+                <div class="prod-foot">
+                  <span class="price">— ₽</span
+                  ><a class="btn btn-line btn-sm" href="#order">В заказ</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="ingredients" style="padding-top: 0">
+        <div class="container">
+          <div class="section-head">
+            <span class="mono accent">Состав без секретов</span>
+            <h2>Какой компонент в&nbsp;каком средстве</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="text-align: left">Компонент</th>
+                  <th>Тонер<br />Anua</th>
+                  <th>Пэды<br />Biodance</th>
+                  <th>Сыворотка<br />Anua</th>
+                  <th>Крем<br />Dr.Althea</th>
+                  <th>Мист<br />Dr.Althea</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Ниацинамид<small>ровный тон, следы высыпаний</small></th>
+                  <td><i class="yes"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="yes"></i></td>
+                  <td><i class="no"></i></td>
+                </tr>
+                <tr>
+                  <th>Гиалуроновая кислота<small>удерживает влагу</small></th>
+                  <td><i class="no"></i></td>
+                  <td><i class="yes"></i></td>
+                  <td><i class="yes"></i></td>
+                  <td><i class="yes"></i></td>
+                  <td><i class="no"></i></td>
+                </tr>
+                <tr>
+                  <th>Коллаген<small>упругость</small></th>
+                  <td><i class="no"></i></td>
+                  <td><i class="yes"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="no"></i></td>
+                </tr>
+                <tr>
+                  <th>Пантенол<small>успокаивает</small></th>
+                  <td><i class="yes"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="yes"></i></td>
+                  <td><i class="yes"></i></td>
+                </tr>
+                <tr>
+                  <th>
+                    Центелла / мадекассосид<small>снимает покраснения</small>
+                  </th>
+                  <td><i class="no"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="yes"></i></td>
+                  <td><i class="yes"></i></td>
+                </tr>
+                <tr>
+                  <th>Церамиды<small>защитный барьер</small></th>
+                  <td><i class="yes"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="yes"></i></td>
+                  <td><i class="no"></i></td>
+                </tr>
+                <tr>
+                  <th>PDRN<small>восстановление, сияние</small></th>
+                  <td><i class="no"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="yes"></i></td>
+                  <td><i class="no"></i></td>
+                  <td><i class="no"></i></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note" style="margin-top: 14px">
+            * По данным производителя. Таблица отражает ключевые компоненты,
+            а&nbsp;не&nbsp;полный состав.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="set" style="padding-top: 0">
+        <div class="container set">
+          <div class="set-list">
+            <span class="mono accent">Весь ритуал сразу</span>
+            <h2 style="margin-top: 12px">Набор из&nbsp;5 средств</h2>
+            <ul>
+              <li>
+                <span class="mono">01</span
+                ><svg><use href="#check" /></svg>Тонер Anua Peach 77 Niacin
+              </li>
+              <li>
+                <span class="mono">02</span><svg><use href="#check" /></svg>Пэды
+                Biodance Collagen Gel Toner Pads
+              </li>
+              <li>
+                <span class="mono">03</span
+                ><svg><use href="#check" /></svg>Сыворотка Anua PDRN Hyaluronic
+                Acid
+              </li>
+              <li>
+                <span class="mono">04</span><svg><use href="#check" /></svg>Крем
+                Dr.Althea 345 Relief Cream
+              </li>
+              <li>
+                <span class="mono">05</span
+                ><svg><use href="#check" /></svg>Крем-мист Dr.Althea 345 Relief
+                Cream Mist
+              </li>
+            </ul>
+          </div>
+          <div class="set-card">
+            <div style="display: grid; gap: 12px">
+              <span class="mono">Цена набора</span>
+              <div class="set-price">— ₽</div>
+              <p>
+                Выгоднее, чем брать средства по&nbsp;отдельности. Подскажем
+                порядок нанесения под ваш тип кожи.
+              </p>
+            </div>
+            <div style="display: grid; gap: 10px">
+              <a class="btn btn-white" href="#order">Заказать набор</a>
+              <p style="font-size: 0.88rem">Можно взять и&nbsp;одно средство</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="faq" style="padding-top: 0">
+        <div class="container">
+          <div class="section-head">
+            <span class="mono accent">FAQ</span>
+            <h2>Частые вопросы</h2>
+          </div>
+          <div class="faq">
+            <details>
+              <summary>Подойдёт ли уход чувствительной коже?</summary>
+              <p>
+                Производители позиционируют эти средства для чувствительной
+                кожи. Но реакция всегда индивидуальна: перед первым применением
+                нанесите немного средства на&nbsp;сгиб локтя и&nbsp;подождите
+                сутки.
+              </p>
+            </details>
+            <details>
+              <summary>Обязательно брать все 5 средств?</summary>
+              <p>
+                Нет. Можно начать с&nbsp;одного-двух — например, с&nbsp;тонера
+                и&nbsp;крема — и&nbsp;добавлять остальные постепенно.
+              </p>
+            </details>
+            <details>
+              <summary>Когда будет заметен результат?</summary>
+              <p>
+                Ощущение увлажнения — сразу после нанесения. Изменения тона
+                и&nbsp;текстуры кожи требуют регулярного ухода в&nbsp;течение
+                нескольких недель.
+              </p>
+            </details>
+            <details>
+              <summary>Как оформить заказ и&nbsp;доставку?</summary>
+              <p>[Заполнить: способы доставки, сроки, оплата.]</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="order" style="padding-top: 0">
+        <div class="container">
+          <div class="order">
+            <div class="order-copy">
+              <span class="mono accent">Подбор ухода</span>
+              <h2>Расскажем, с&nbsp;чего начать именно вам</h2>
+              <p>
+                Оставьте имя и&nbsp;контакт — напишем, уточним тип кожи
+                и&nbsp;подскажем набор. Ни&nbsp;к&nbsp;чему не&nbsp;обязывает.
+              </p>
+              <div class="messengers">
+                <a class="btn btn-line btn-sm" href="#"
+                  >Написать в&nbsp;Telegram</a
+                >
+                <a class="btn btn-line btn-sm" href="#"
+                  >Написать в&nbsp;WhatsApp</a
+                >
+              </div>
+            </div>
+            <form class="form" novalidate>
+              <label class="field"
+                >Имя<input
+                  name="name"
+                  autocomplete="given-name"
+                  placeholder="Анна"
+                  required
+              /></label>
+              <label class="field"
+                >Telegram или телефон<input
+                  name="contact"
+                  placeholder="@username или +7"
+                  required
+              /></label>
+              <label class="check"
+                ><input type="checkbox" required />
+                <span
+                  >Согласна на&nbsp;обработку персональных данных по&nbsp;<a
+                    href="#"
+                    >политике</a
+                  ></span
+                ></label
+              >
+              <button class="btn btn-primary" type="submit">
+                Подобрать уход
+              </button>
+              <p class="form-msg" role="status"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <span>© 2026 Glow Ritual · [ФИО, ИНН — заполнить]</span>
+        <a href="#">Политика обработки персональных данных</a>
+      </div>
+    </footer>
+
+    <script>
+      document.querySelector(".form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const f = e.target,
+          msg = f.querySelector(".form-msg");
+        if (!f.checkValidity()) {
+          msg.textContent = "Заполните имя, контакт и отметьте согласие.";
+          return;
+        }
+        msg.textContent =
+          "Черновик: отправка заявки подключится на следующем этапе.";
+      });
+    </script>
+  </body>
+</html>

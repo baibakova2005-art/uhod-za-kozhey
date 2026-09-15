@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+# Черновые снимки для проверки вёрстки — не для репозитория
+screenshots/_check/

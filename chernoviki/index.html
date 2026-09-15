@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Варианты дизайна — лендинг ухода за кожей</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f6f3f1;
+        --ink: #1f1a1c;
+        --ink-2: #5d5358;
+        --line: #e3dcd9;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          16px/1.6 "Manrope",
+          system-ui,
+          sans-serif;
+      }
+      .wrap {
+        width: min(1100px, 100% - 40px);
+        margin: 0 auto;
+        padding: 64px 0;
+      }
+      h1 {
+        font-size: clamp(1.8rem, 1.2rem + 2vw, 2.6rem);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin: 0 0 12px;
+      }
+      .lead {
+        color: var(--ink-2);
+        max-width: 60ch;
+        margin: 0 0 40px;
+      }
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+      a.card {
+        display: grid;
+        gap: 12px;
+        text-decoration: none;
+        color: inherit;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 16px 16px 24px;
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+      a.card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 36px -18px rgba(40, 20, 30, 0.35);
+      }
+      a.card:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 3px;
+      }
+      .swatch {
+        height: 160px;
+        border-radius: 12px;
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        padding: 16px;
+      }
+      .swatch i {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+      }
+      h2 {
+        margin: 4px 4px 0;
+        font-size: 1.25rem;
+      }
+      p {
+        margin: 0 4px;
+        color: var(--ink-2);
+        font-size: 0.95rem;
+      }
+      .fonts {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--ink);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Лендинг «Уход за кожей лица» — 3 варианта дизайна</h1>
+      <p class="lead">
+        Текст и порядок блоков одинаковые, отличается оформление. Иллюстрации
+        флаконов нарисованы кодом — это заглушки до настоящих фото. Цены «— ₽» и
+        поля в квадратных скобках заполняются позже.
+      </p>
+      <div class="grid">
+        <a class="card" href="a-pudra.html">
+          <div
+            class="swatch"
+            style="
+              background: linear-gradient(
+                135deg,
+                #fbd9d6,
+                #fde5d3 55%,
+                #f3dbef
+              );
+            "
+          >
+            <i style="background: #b83d62"></i
+            ><i style="background: #fdf5f2"></i
+            ><i style="background: #2a1b21"></i>
+          </div>
+          <h2>A. «Пудра»</h2>
+          <p>
+            Нежный розово-персиковый, мягкие скруглённые карточки, «сияющий»
+            K-beauty. Самый дружелюбный и девичий.
+          </p>
+          <p class="fonts">Unbounded + Manrope</p>
+        </a>
+        <a class="card" href="b-zhurnal.html">
+          <div class="swatch" style="background: #e6dccd">
+            <i style="background: #8a4b35"></i
+            ><i style="background: #f2ece3"></i
+            ><i style="background: #231c17"></i>
+          </div>
+          <h2>B. «Журнал»</h2>
+          <p>
+            Песочный фон, крупные заголовки с засечками, тонкие линии, как в
+            глянце. Выглядит дороже и спокойнее.
+          </p>
+          <p class="fonts">Playfair Display + Manrope</p>
+        </a>
+        <a class="card" href="c-laboratoriya.html">
+          <div class="swatch" style="background: #e7eafc">
+            <i style="background: #4353d6"></i
+            ><i style="background: #ffffff"></i
+            ><i style="background: #141a2e"></i>
+          </div>
+          <h2>C. «Лаборатория»</h2>
+          <p>
+            Белый и холодный синий, цифры и таблица состава. Для тех, кто
+            выбирает уход «по компонентам».
+          </p>
+          <p class="fonts">Onest + JetBrains Mono</p>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

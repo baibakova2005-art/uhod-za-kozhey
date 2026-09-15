@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* Токены варианта A «Пудра»: розово-персиковый фон, акцент — тёмная роза.
+   Нейтральные с розовой примесью, не серые. Чёрный — не #000. */
+@theme {
+  --font-sans: "Manrope Variable", system-ui, sans-serif;
+  --font-display:
+    "Unbounded Variable", "Manrope Variable", system-ui, sans-serif;
+
+  --color-bg: #fdf5f2;
+  --color-surface: #ffffff;
+  --color-soft: #fbe7e5;
+  --color-ink: #2a1b21;
+  --color-muted: #6b5058;
+  --color-line: #efd9d9;
+  /* Рамки полей и второстепенных кнопок: не светлее 3:1 к белому */
+  --color-line-strong: #a8868f;
+  --color-accent: #b83d62;
+  --color-accent-hover: #a2324f;
+  --color-accent-text: #b0385c;
+  --color-on-accent: #ffffff;
+}
+
+:root {
+  --radius-card: 32px;
+  --radius-field: 14px;
+  --shadow-btn:
+    0 1px 2px rgba(120, 40, 64, 0.12), 0 10px 24px -12px rgba(120, 40, 64, 0.45);
+  --shadow-card:
+    0 1px 2px rgba(120, 40, 64, 0.06), 0 16px 40px -18px rgba(120, 40, 64, 0.22);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3 {
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+/* Видимая рамка фокуса на всём, что нажимается с клавиатуры.
+   Цвет задан явно: переменная Tailwind в этом правиле не подхватывалась. */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid #b83d62;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
