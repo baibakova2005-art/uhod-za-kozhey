@@ -4,6 +4,10 @@
 
 **Живая версия:** https://baibakova2005-art.github.io/uhod-za-kozhey/
 
+![Первый экран](screenshots/oblozhka.jpg)
+
+Полные снимки страницы: [компьютер](screenshots/kompyuter.jpg) · [телефон 360 px](screenshots/telefon.jpg)
+
 Дизайн — вариант A «Пудра» из трёх черновиков (`chernoviki/`).
 
 ## Товары и цены
