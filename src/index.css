@@ -6,6 +6,9 @@
   --font-sans: "Manrope Variable", system-ui, sans-serif;
   --font-display:
     "Unbounded Variable", "Manrope Variable", system-ui, sans-serif;
+  /* Засечки — только для крупных слов. PT Serif нарисован под кириллицу:
+     «у» и «д» без длинных хвостов, поэтому не налезают на строку снизу. */
+  --font-serif: "PT Serif", Georgia, serif;
 
   --color-bg: #fdf5f2;
   --color-surface: #ffffff;
@@ -62,5 +65,149 @@ h3 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Бегущая строка: трек из двух одинаковых рядов, сдвиг на половину = бесшовно. */
+.marquee {
+  overflow: hidden;
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 42s linear infinite;
+}
+.marquee__row {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin: 0;
+  padding: 0 1rem;
+  list-style: none;
+}
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track {
+  animation-play-state: paused;
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+  }
+}
+
+/* ── Живой фон: мягкие пятна медленно дрейфуют ───────────────────────── */
+.mesh {
+  position: relative;
+  isolation: isolate;
+}
+.mesh__blob {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(64px);
+  animation: mesh-drift 24s ease-in-out infinite alternate;
+}
+@keyframes mesh-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(5%, -4%, 0) scale(1.1);
+  }
+}
+
+/* Плёночное зерно поверх секции: убирает ощущение плоской заливки */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.5'/></svg>");
+}
+
+/* Световой блик по кнопке при наведении */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  left: -70px;
+  width: 44px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+.shine:hover::after {
+  animation: shine-sweep 0.75s ease;
+}
+@keyframes shine-sweep {
+  to {
+    left: 120%;
+  }
+}
+
+/* Тёмная секция со светом за курсором. Без мыши светится ровно по центру. */
+.spot {
+  position: relative;
+  overflow: hidden;
+}
+.spot::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: radial-gradient(
+    280px 280px at var(--mx, 50%) var(--my, 40%),
+    rgba(248, 190, 205, 0.45),
+    transparent 65%
+  );
+}
+
+/* Появление блока при прокрутке.
+   По умолчанию блок ВИДЕН. Прячем его только после того, как скрипт повесил
+   класс js-anim на страницу: если JavaScript не отработал или наблюдатель
+   не поддерживается, содержимое остаётся на месте, а не исчезает. */
+.js-anim .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+.js-anim .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh__blob {
+    animation: none;
+  }
+  .js-anim .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .shine::after {
+    display: none;
   }
 }

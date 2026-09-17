@@ -6,7 +6,7 @@ import { useEffect, useId, useRef, useState } from "react";
 const BASE = import.meta.env.BASE_URL;
 
 export const btnPrimary =
-  "inline-flex min-h-12 items-center justify-center rounded-full bg-accent px-7 py-3 text-[15px] font-bold text-on-accent shadow-[var(--shadow-btn)] transition duration-200 hover:-translate-y-0.5 hover:bg-accent-hover active:translate-y-0 disabled:opacity-60";
+  "shine inline-flex min-h-12 items-center justify-center rounded-full bg-accent px-7 py-3 text-[15px] font-bold text-on-accent shadow-[var(--shadow-btn)] transition duration-200 hover:-translate-y-0.5 hover:bg-accent-hover active:translate-y-0 disabled:opacity-60";
 export const btnGhost =
   "inline-flex min-h-12 items-center justify-center rounded-full border border-line-strong bg-surface px-7 py-3 text-[15px] font-bold text-ink transition duration-200 hover:-translate-y-0.5 hover:border-ink active:translate-y-0";
 
@@ -138,6 +138,111 @@ export function Header({ brand, links, cta }) {
         )}
       </nav>
     </header>
+  );
+}
+
+// Появление блока при прокрутке. Срабатывает один раз и только если человек
+// не отключил анимации — тогда блок просто виден сразу (правило в index.css).
+export function Reveal({ children, className = "", delay = 0 }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver !== "function") return;
+    // Прячем блоки только когда анимация точно заработает
+    document.documentElement.classList.add("js-anim");
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("is-in");
+          io.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div
+      ref={ref}
+      className={`reveal ${className}`}
+      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+    >
+      {children}
+    </div>
+  );
+}
+
+// Тёмный блок, по которому за курсором двигается мягкое световое пятно.
+// На телефоне курсора нет — остаётся ровное свечение по центру.
+export function Spotlight({ children, className = "" }) {
+  const ref = useRef(null);
+  const move = (e) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+  return (
+    <div ref={ref} onPointerMove={move} className={`spot ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+// Бегущая строка. Второй ряд — копия для бесшовной прокрутки, он скрыт от
+// скринридера. У кого отключены анимации — строка просто стоит (правило в index.css).
+export function Marquee({ items, label }) {
+  const row = (copy) => (
+    <ul
+      className="marquee__row"
+      aria-hidden={copy ? "true" : undefined}
+      key={copy ? "copy" : "main"}
+    >
+      {items.map((t, i) => (
+        <li key={`${t}-${i}`} className="flex items-center gap-8">
+          <span className="whitespace-nowrap font-display text-[15px] font-semibold tracking-[0.06em]">
+            {t}
+          </span>
+          <span
+            aria-hidden="true"
+            className="size-1.5 shrink-0 rounded-full bg-accent/45"
+          />
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <div
+      className="marquee border-y border-line bg-surface py-4"
+      role="group"
+      aria-label={label}
+    >
+      <div className="marquee__track">{[row(false), row(true)]}</div>
+    </div>
+  );
+}
+
+// Мягкая волна на стыке двух секций: сверху цвет уходящей секции, снизу — следующей.
+export function Wave({ from, to, flip = false, className = "" }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={`leading-[0] ${className}`}
+      style={{ background: from }}
+    >
+      <svg
+        viewBox="0 0 1440 110"
+        preserveAspectRatio="none"
+        className={`block h-[clamp(36px,5vw,74px)] w-full ${flip ? "rotate-180" : ""}`}
+      >
+        <path
+          d="M0 58C220 6 400 96 700 64c260-28 460 34 740-6v52H0z"
+          fill={to}
+        />
+      </svg>
+    </div>
   );
 }
 
